@@ -12,29 +12,11 @@ public class UtilisateurService {
     @Autowired
     private UtilisateurRepository repository;
 
-    public Utilisateur saveUtilisateur(Utilisateur utilisateur) {
-        return repository.save(utilisateur);
-    }
-
     public List<Utilisateur> getUtilisateurs() {
         return repository.findAll();
     }
 
-    public Utilisateur getUtilisateurById(int id) {
-        return repository.findById(id).orElse(null);
-    }
-
-
-    public String deleteUtilisateur(int id) {
-        repository.deleteById(id);
-        return "Utilisateur ["+id+"] supprimer !!";
-    }
-
-    public Utilisateur updateUtilisateur(int id, Utilisateur utilisateur) {
-        Utilisateur existingUtilisateur = repository.findById(id).orElse(null);
-        // existingUtilisateur.set(utilisateur.);
-        return repository.save(existingUtilisateur);
-    }
-
-
+    // public Utilisateur findUtilisateur(Utilisateur utilisateur) {
+    //     return repository.findOne(utilisateur).orElse(null);
+    // }
 }

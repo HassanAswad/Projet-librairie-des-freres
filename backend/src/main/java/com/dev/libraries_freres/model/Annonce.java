@@ -1,6 +1,11 @@
 package com.dev.libraries_freres.model;
 
+import java.time.LocalDate;
+
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.ManyToOne;
@@ -22,14 +27,15 @@ public class Annonce {
     private String auteur;
     private double prix;
     private String descriptionAnnonce;
-    private String conditionAnnonce;
-    private String date;
+    @Enumerated(EnumType.STRING)
+    @Column(name="conditionAnnonce")
+    private Etat conditionAnnonce;
+    private LocalDate date;
     private String urlPhotoLivre;
-    private String etat = "active";
+    @Enumerated(EnumType.STRING)
+    @Column(name="etat")
+    private Etat etat;
     private int ajouterFavorie;
-    // private int idCategorie;
-    // private int MembreidUtilisateur;
-    // private int AdminIdUtilisateur;
     @ManyToOne
     private CategorieAnnonce idCategorie;
     @ManyToOne
