@@ -1,0 +1,10 @@
+.navbar.footer {
+    box-shadow: 0px 0px 7px 1px #AAA;
+    background-color: #9fc5f8;
+    color: #ffffff;
+}
+
+.navbar.footer ul{
+    /* text-align: left; */
+    padding: 0px;
+}
