@@ -1,0 +1,11 @@
+.container.ajouter-livre-form form {
+    background: #DDDDDD;
+}
+
+.vendeur-image  .input-group-text {
+    background: #ffffff;
+    cursor: pointer;
+}
+.vendeur-image input[type=file] {
+    visibility: hidden;
+}
