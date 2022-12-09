@@ -1,0 +1,7 @@
+package com.dev.libraries_freres.model;
+
+public class RESTImage {
+    private Stirng type;
+    private String base64;
+
+}

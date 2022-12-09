@@ -24,6 +24,18 @@ public class AdminService {
         return repository.findById(id).orElse(null);
     }
 
+    public Admin findAdminByIdUtilisateur(int id) {
+        List<Admin> utilisateurs = repository.findAll();
+        for(int i=0; i<utilisateurs.size(); i++){
+            Admin utilisateur = utilisateurs.get(i);
+            if(utilisateur.getId()==id ){
+                return utilisateur;
+            }
+        }
+        return null;
+        // return repository.findAdminByIdUtilisateur(id);
+    }
+
 
     public String deleteAdmin(int id) {
         repository.deleteById(id);

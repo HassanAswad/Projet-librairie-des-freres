@@ -1,18 +1,11 @@
 package com.dev.libraries_freres.model;
 
-import java.time.LocalDate;
-
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+
+import java.time.LocalDate;
 
 @Data
 @AllArgsConstructor
@@ -29,17 +22,20 @@ public class Annonce {
     private String descriptionAnnonce;
     @Enumerated(EnumType.STRING)
     @Column(name="conditionAnnonce")
-    private Etat conditionAnnonce;
+    private ConditionAnnonce conditionAnnonce;
     private LocalDate date;
     private String urlPhotoLivre;
     @Enumerated(EnumType.STRING)
     @Column(name="etat")
     private Etat etat;
     private int ajouterFavorie;
-    @ManyToOne
-    private CategorieAnnonce idCategorie;
-    @ManyToOne
-    private Membre MembreidUtilisateur;
-    @ManyToOne
-    private Membre AdminIdUtilisateur;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    // @JoinColumn(name="id_categorie")
+    private CategorieAnnonce categorie;
+    @ManyToOne(cascade = {CascadeType.ALL})
+    // @JoinColumn(name="id_membre")
+    private Membre membre;
+    // @JoinColumn(name="id_admin")
+    @ManyToOne(cascade = {CascadeType.ALL})
+    private Admin admin;
 }

@@ -23,6 +23,17 @@ public class MembreService {
     public Membre getMembreById(int id) {
         return repository.findById(id).orElse(null);
     }
+    public Membre findMembreByIdUtilisateur(int id) {
+        List<Membre> utilisateurs = repository.findAll();
+        for(int i=0; i<utilisateurs.size(); i++){
+            Membre utilisateur = utilisateurs.get(i);
+            if(utilisateur.getId()==id ){
+                return utilisateur;
+            }
+        }
+        return null;
+        // return repository.findMembreByIdUtilisateur(id);
+    }
 
 
     public String deleteMembre(int id) {

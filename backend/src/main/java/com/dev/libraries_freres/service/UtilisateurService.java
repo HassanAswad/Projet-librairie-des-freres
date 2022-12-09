@@ -16,7 +16,16 @@ public class UtilisateurService {
         return repository.findAll();
     }
 
-    // public Utilisateur findUtilisateur(Utilisateur utilisateur) {
-    //     return repository.findOne(utilisateur).orElse(null);
-    // }
+    public Utilisateur findUtilisateur(Utilisateur u) {
+        List<Utilisateur> utilisateurs = repository.findAll();
+        for(int i=0; i<utilisateurs.size(); i++){
+            Utilisateur utilisateur = utilisateurs.get(i);
+            if(utilisateur.getEmail().equals(u.getEmail()) && utilisateur.getMotDePasse().equals(u.getMotDePasse()) ){
+                return utilisateur;
+            }
+        }
+        return null;
+    }
+    
+    
 }
