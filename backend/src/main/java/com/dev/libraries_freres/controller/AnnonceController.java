@@ -1,6 +1,10 @@
 package com.dev.libraries_freres.controller;
 
+import com.dev.libraries_freres.model.Admin;
 import com.dev.libraries_freres.model.Annonce;
+import com.dev.libraries_freres.model.CategorieAnnonce;
+import com.dev.libraries_freres.model.Etat;
+import com.dev.libraries_freres.model.Membre;
 import com.dev.libraries_freres.service.AnnonceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -21,19 +25,44 @@ public class AnnonceController {
     @Autowired
     private AnnonceService service;
 
-    @PostMapping("/add")
-    public Annonce addAnnonce(@RequestBody Annonce annonce) {
+    @PostMapping("/add/{categorie}/{membre}/{admin}")
+    public Annonce addAnnonce(@RequestBody Annonce annonce, @PathVariable CategorieAnnonce categorie, @PathVariable Membre membre, @PathVariable Admin admin) {
+        annonce.setCategorie(categorie);
+        annonce.setMembre(membre);
+        annonce.setAdmin(admin);
         return service.saveAnnonce(annonce);
     }
 
-    @GetMapping("/all")
-    public List<Annonce> findAllAnnonces() {
-        return service.getAnnonces();
+    @GetMapping("/findByEtat/{etat}")
+    public List<Annonce> findByEtat(@PathVariable int etat) {
+        switch (etat) {
+            case 0:
+                return service.findByEtat(Etat.DISACTIVE);
+            case 1:
+                return service.findByEtat(Etat.ACTIVE);
+            default:
+                return service.findByEtat(Etat.ACTIVE);
+        }
     }
 
-    @GetMapping("/byId/{id}")
-    public Annonce findAnnonceById(@PathVariable int id) {
-        return service.getAnnonceById(id);
+    @GetMapping("/findByCategorie/{categorie}")
+    public List<Annonce> findByCategorie(@PathVariable CategorieAnnonce categorie) {
+        return service.findByCategorie(categorie);
+    }
+
+    @GetMapping("/findByMembre/{membre}")
+    public List<Annonce> findByMembre(@PathVariable Membre membre) {
+        return service.findByMembre(membre);
+    }
+
+    @GetMapping("/findByTitre/{titre}")
+    public List<Annonce> findByTitre(@PathVariable String titre) {
+        return service.findByTitre(titre);
+    }
+
+    @GetMapping("/findById/{id}")
+    public Annonce findById(@PathVariable int id) {
+        return service.findById(id);
     }
 
     @PutMapping("/update")
@@ -42,8 +71,8 @@ public class AnnonceController {
     }
 
     @DeleteMapping("/delete/{id}")
-    public String deleteAnnonce(@PathVariable int id) {
-        return service.dsactivateAnnonce(id);
+    public Annonce deleteAnnonce(@PathVariable int id) {
+        return service.deactivateAnnonce(id);
     }
 
     // @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

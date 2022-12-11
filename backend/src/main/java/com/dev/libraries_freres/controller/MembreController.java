@@ -1,5 +1,6 @@
 package com.dev.libraries_freres.controller;
 
+import com.dev.libraries_freres.model.Admin;
 import com.dev.libraries_freres.model.Membre;
 import com.dev.libraries_freres.service.MembreService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,9 @@ public class MembreController {
     @Autowired
     private MembreService service;
 
-    @PostMapping("/add")
-    public Membre addHero(@RequestBody Membre membre) {
+    @PostMapping("/add/{admin}")
+    public Membre addMembre(@RequestBody Membre membre, @PathVariable Admin admin) {
+        membre.setAdmin(admin);
         return service.saveMembre(membre);
     }
 

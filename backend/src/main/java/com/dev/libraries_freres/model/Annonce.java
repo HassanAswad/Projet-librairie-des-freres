@@ -1,11 +1,26 @@
 package com.dev.libraries_freres.model;
 
-import jakarta.persistence.*;
+import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
+import jakarta.persistence.CascadeType;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
-import java.time.LocalDate;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
@@ -29,13 +44,21 @@ public class Annonce {
     @Column(name="etat")
     private Etat etat;
     private int ajouterFavorie;
-    @ManyToOne(cascade = {CascadeType.ALL})
-    // @JoinColumn(name="id_categorie")
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="categorie_id")
     private CategorieAnnonce categorie;
-    @ManyToOne(cascade = {CascadeType.ALL})
-    // @JoinColumn(name="id_membre")
+
+
+    // @JsonIgnore
+    // @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="membre_id")
     private Membre membre;
-    // @JoinColumn(name="id_admin")
-    @ManyToOne(cascade = {CascadeType.ALL})
+
+    @JsonIgnore
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name="admin_id")
     private Admin admin;
 }

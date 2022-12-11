@@ -1,5 +1,7 @@
 package com.dev.libraries_freres.model;
 
+import java.io.Serializable;
+
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,14 +14,18 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Getter
+@Setter
 @Entity
-@Table(name = "Membre")
-public class Membre extends Utilisateur {
+@Table(name = "membre")
+public class Membre extends Utilisateur implements Serializable {
     // @Id
     // @GeneratedValue
     // private int idMembre;
