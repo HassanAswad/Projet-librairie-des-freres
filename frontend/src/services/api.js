@@ -1,95 +1,64 @@
-const API_LINK = 'http://localhost:8080'
 
+import { helper } from "../helpers";
 
-const getOne = async (model, id) => {
-    return await fetch(`${API_LINK}/${model}/${id}`,{
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("HTTP status " + response.status);
-            }
-            return response.json();
+export const api = {
+
+    fetchCategories: ()=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/categorieAnnonce/all`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let data = await response.json()
+                    resolve(data)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
         })
-        .then((results) => results)
-        .catch((err) => {
-            throw new Error("catch throw " + err);
-        });
-}
+    },
 
-
-const getMultiple = async (model, page)=>{
-    return await fetch(`${API_LINK}/${model}${page? '?page='+page:'' }`,{
-        method: 'GET',
-        headers: { 'Content-Type': 'application/json' },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("HTTP status " + response.status);
-            }
-            return response.json();
+    fetchAnnonces : (url)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/annonce/${url}`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let data = await response.json()
+                    resolve(data)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
         })
-        .then(data => data)
-        .catch((err) => {
-            throw new Error("catch throw " + err);
-        });
+    },
+
+    uploadImage : (file)=>{
+        return new Promise((resolve, reject)=>{
+            helper.fileToBase64(file).then((base64)=>{
+                const data = { "base64": base64.replace('data:', '').replace(/^.+,/, ''), "name": file.name }
+                fetch(`/annonce/upload`,{
+                    method: 'POST',
+                    body: JSON.stringify(data),
+                    headers: { 'Content-Type': 'application/json' },
+                })
+                .then(async (response) => {
+                    resolve(response.ok)
+                })
+                .catch((err) => {
+                    reject(false)
+                });
+            })
+        })     
+    }
 }
-
-
-const add = async(model, data)=>{
-    return await fetch(`${API_LINK}/${model}`,{
-        method: 'POST',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("HTTP status " + response.status);
-            }
-            return response.json();
-        })
-        .then(data => data)
-        .catch((err) => {
-            throw new Error("catch throw " + err);
-        });
-}
-
-
-const update = async(model, id, data)=>{
-    return await fetch(`${API_LINK}/${model}/${id}`,{
-        method: 'PUT',
-        body: JSON.stringify(data),
-        headers: { 'Content-Type': 'application/json' },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("HTTP status " + response.status);
-            }
-            return response.json();
-        })
-        .then(data => data)
-        .catch((err) => {
-            throw new Error("catch throw " + err);
-        });
-}
-
-
-const remove = async(model, id)=>{
-    return await fetch(`${API_LINK}/${model}/${id}`,{
-        method: 'DELETE',
-        headers: { 'Content-Type': 'application/json' },
-    })
-        .then((response) => {
-            if (!response.ok) {
-                throw new Error("HTTP status " + response.status);
-            }
-            return response.json();
-        })
-        .then(data => data)
-        .catch((err) => {
-            throw new Error("catch throw " + err);
-        });
-}
-
-export { getOne, getMultiple, add, update, remove }
