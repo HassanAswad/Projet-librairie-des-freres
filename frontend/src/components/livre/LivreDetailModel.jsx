@@ -5,11 +5,15 @@ import { BsFillExclamationCircleFill } from "@react-icons/all-files/bs/BsFillExc
 import { AiFillHeart } from "@react-icons/all-files/ai/AiFillHeart";
 
 import BookImage from'../../assets/images/bookimage.png'
+import { useEffect } from 'react';
+import { useState } from 'react';
 
 
-export const LivreDetailModel = ({id, titre, auteur, prix, date, etat, adresse, description}) => {
+export const LivreDetailModel = ({annonce}) => {
+
+    const {id, urlPhotoLivre, titre, auteur, prix, date, conditionAnnonce, descriptionAnnonce, membre} = annonce
     return (
-        <div className="modal fade" id="LivreDetailModel" tabIndex="-1" aria-labelledby="modelLabel" aria-hidden="true">
+        <div className="modal fade" id={`LivreDetailModel${id}`} tabIndex="-1" aria-labelledby="modelLabel" aria-hidden="true">
             <div className="modal-dialog modal-dialog-scrollable">
                 <div className="modal-content">
                     <div className="modal-header">
@@ -21,7 +25,8 @@ export const LivreDetailModel = ({id, titre, auteur, prix, date, etat, adresse, 
                         <div className="card mb-3" >
                             <div className="row g-0">
                                 <div className="col-md-4">
-                                    <img src={BookImage} className="img-fluid rounded-start" alt="..." />
+                                    {/* <img src={BookImage} className="img-fluid rounded-start" alt="..." /> */}
+                                    <img src={`uploads/${urlPhotoLivre}`} className="img-fluid rounded-start" alt="..." />
                                     <p className="card-text d-flex justify-content-around">
                                         <span className="text-warning_" style={{color: 'darkorange'}}><AiFillStar /> <br/> Evaluate</span>
                                         <span className="text-warning"><AiFillHeart /> <br/> Add to wishlist</span>
@@ -32,11 +37,11 @@ export const LivreDetailModel = ({id, titre, auteur, prix, date, etat, adresse, 
                                         <h5 className="card-title">{titre} <span className="card-text text-primary">{prix}$</span></h5>
                                         
                                         <small className="card-text text-muted">{auteur}</small><br/> 
-                                        <small className="card-text text-muted">{date}</small><br/> 
-                                        <small className="card-text text-muted">{etat}</small>
-                                        <p className="card-text"><MdLocationOn /> {adresse}</p>
+                                        <small className="card-text text-muted">{new Date(date).toISOString().split('T')[0]}</small><br/> 
+                                        <small className="card-text text-muted">{conditionAnnonce}</small>
+                                        <p className="card-text"><MdLocationOn /> {`${membre?.adresse}, ${membre?.ville}, ${membre?.pays}`}</p>
                                         <span className="card-text text-start">Description : <br/> 
-                                            {}
+                                            {descriptionAnnonce}
                                         </span>
                                         <div className="mb-3">
                                             <label htmlFor="input-message" className="form-label d-flex justify-content-start">Message</label>

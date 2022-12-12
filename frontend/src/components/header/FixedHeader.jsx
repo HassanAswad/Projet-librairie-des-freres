@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Outlet, Link } from "react-router-dom";
 import './FixedHeader.css';
 
@@ -10,13 +10,34 @@ import { FaUserAlt } from "@react-icons/all-files/fa/FaUserAlt";
 import { IoMdMail } from "@react-icons/all-files/io/IoMdMail";
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
-
+import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'
+import { api } from '../../services/api'
 
 export const FixedHeader = () => {
+
+    const [session, setSession] = useLocalStorage("session", null);
+
+    const [word, setWord] = useState("")
+    const handleSearch = (event)=> {
+        event?.preventDefault()
+        
+        if(event?.which == 13 || event?.keyCode == 13){
+            console.log(word)
+            api.fetchAnnonces(`/findByTitre/${word}`).then(data=>{
+                if(data!=null){
+                    // setCategoryList(data)
+                }
+            }).catch(err=> alert(err))
+
+        }
+    }
+
     return (
         <nav className="navbar navbar-expand-lg fixed-top bg-light_ navbar-light bg-warning_">
             <div className="container-fluid">
-                <Link className="navbar-brand" to="/">
+                <Link className="navbar-brand" to={session?.idAdmin?'/admin':'/'}>
                     <span className="btn btn-light btn-sm" >
                         <BsBookHalf />
                     </span>
@@ -38,12 +59,12 @@ export const FixedHeader = () => {
                         </li>
                     </ul>
 
-                    <form className=" d-grid gap-2 mx-auto w-100" role="search">
+                    <div className=" d-grid gap-2 mx-auto w-100" role="search">
                         <div className="input-group mb-0">
-                            <input type="text" className="form-control" placeholder="search product" aria-label="search product" aria-describedby="search-button" />
-                            <button className="btn btn-light" type="button" id="search-button"><BsSearch /></button>
+                            <input type="text" value={word} onKeyUp={(e)=>handleSearch(e)} onChange={(e)=>setWord(e.target.value)} className="form-control" placeholder="search product" aria-label="search product" aria-describedby="search-button" />
+                            <button className="btn btn-light" type="button" onClick={e=> handleSearch(e)} id="search-button"><BsSearch /></button>
                         </div>
-                    </form>
+                    </div>
 
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0 w-100 d-flex justify-content-end">
                         <li className="nav-item">

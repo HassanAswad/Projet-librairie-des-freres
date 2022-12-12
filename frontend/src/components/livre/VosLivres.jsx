@@ -2,7 +2,30 @@ import React from 'react'
 import BookImage from'../../assets/images/bookimage.png'
 import './VosLivres.css'
 
-export const VosLivres = () => {
+export const VosLivres = ({annoncesList, fetchAnnoncesList}) => {
+
+    const handleDelete = (e, id) => {
+        if (window.confirm("Are you sure you want to delete?")) {
+            fetch(`/annonce/delete/${id}`,{
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let data = await response.json()
+                    fetchAnnoncesList()
+                    alert("annonce deleted successfully !")
+                } catch (error) {
+                    alert(error)
+                }
+            })
+            .catch((err) => {
+                console.log(err)
+            });
+        }
+    }
+
+
     return (
         <div className="container vos-livres mt-4 mb-4" >
             <div className="row mt-4 mb-4">
@@ -24,17 +47,18 @@ export const VosLivres = () => {
                 </thead> */}
                 <tbody>
                     {
-                        [...Array(8)].map((e, i) =>
+                        annoncesList.map((annonce, i) =>
                             <tr key={i} className="border border-5 border-light" >
                                 <th scope="row">{i+1}</th>
-                                <td><img src={BookImage} className="card-img-top rounded mx-auto d-block img-fluid" alt={"The Pragmatic"} /></td>
-                                <td>The Pragmatic</td>
-                                <td>24.25$</td>
-                                <td>Informatique</td>
-                                <td>Publiee le {new Date().toISOString().split('T')[0]}</td>
+                                {/* <td><img src={BookImage} className="card-img-top rounded mx-auto d-block img-fluid" alt={annonce.titre} /></td> */}
+                                <td><img src={`uploads/${annonce?.urlPhotoLivre}`} className="card-img-top rounded mx-auto d-block img-fluid" alt={annonce.titre} /></td>
+                                <td>{annonce.titre}</td>
+                                <td>{annonce.prix}$</td>
+                                <td>{annonce.categorie?.libelle}</td>
+                                <td>Publiee le {new Date(annonce.date).toISOString().split('T')[0]}</td>
                                 <td>
                                     <button className="btn btn-success m-1">Modifie</button>
-                                    <button className="btn btn-danger m-1">Desactive</button>
+                                    <button className="btn btn-danger m-1" onClick={(e)=>handleDelete(e, annonce.id)} >Desactive</button>
                                 </td>
                             </tr>
                         )

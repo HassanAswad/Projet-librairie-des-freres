@@ -9,3 +9,9 @@
 .vendeur-image input[type=file] {
     visibility: hidden;
 }
+
+.vendeur-image label.input-group-text{
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}

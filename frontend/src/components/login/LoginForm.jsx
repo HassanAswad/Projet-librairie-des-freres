@@ -1,24 +1,50 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
+import { useLocalStorage } from '../../hooks/useLocalStorage'
 
 export const LoginForm = () => {
 
-    const [form, setForm] = useState({"email": "", "motDePasse": ""}) 
+    const [form, setForm] = useState({"email": "admin@mail.com", "motDePasse": "admin"}) 
 
-    const handleClick = ()=>{
+    const [session, setSession] = useLocalStorage("session", null);
+
+    const navigate = useNavigate()
+
+    useEffect(()=>{
+        session!=null && setForm({"email": session.email, "motDePasse": session.motDePasse})
+    },[])
+
+    const handleSubmit = (event)=>{
+        
+        event.preventDefault()
+        
         fetch(`/utilisateur/login`,{
             method: 'POST',
-            body: JSON.stringify({"email": "testemail_01@mail.com", "motDePasse": "testpassword_01"}),
+            body: JSON.stringify(form),
             headers: { 'Content-Type': 'application/json' },
         })
-            .then((response) => response.json() )
-            .then(data => {
-                console.log(data)
-            })
-            .catch((err) => {
-                throw new Error("catch throw " + err);
-            });
+        .then(async (response) => {
+            // console.log(response)
+            if(!response.ok){
+                alert("username or password incorrect !")
+                return
+            }
+            try {
+                let utilisateur = await response.json()
+                // console.log(utilisateur)
+                if(utilisateur!=null){
+                    setSession(utilisateur)
+                    utilisateur?.idAdmin? navigate('/admin') : navigate('/vendeur')
+                }
+            } catch (error) {
+                alert("username or password incorrect !")
+            }
+        })
+        .catch((err) => {
+            // throw new Error("catch throw " + err);
+            console.log(err)
+        });
     }
 
     return (
@@ -28,7 +54,7 @@ export const LoginForm = () => {
                     <span className="mb-0 ps-2 h4"><strong>Login</strong></span>
                 </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit}>
                 <div className="row mt-4">
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
@@ -47,7 +73,7 @@ export const LoginForm = () => {
                 </div>
                 <div className="row mt-4">
                     <div className="d-grid gap-2 col-6 mx-auto">
-                        <input type="button" className="btn btn-primary" value="Login" onClick={handleClick} />
+                        <input type="submit" className="btn btn-primary" value="Login" />
                     </div>
                 </div>
                 <div className="row mt-4">
