@@ -2,53 +2,67 @@ import React from 'react'
 import { ImUpload3 } from "@react-icons/all-files/im/ImUpload3";
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
-import { useEffect } from 'react';
-
+import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { useNavigate } from 'react-router-dom'
+import { useRef } from 'react';
 
 export const RegisterMemberForm = () => {
 
+    const [session, setSession] = useLocalStorage("session", null);
+    const retypePasswordRef = useRef();
+    const navigate = useNavigate()
+
     const [form, setForm]= useState({
-        "idUtilisateur": 4,
-        "email": "testemail04@mail.com",
-        "motDePasse": "password 04",
-        "prenom": "prenom 04",
-        "nom": "nom 04",
-        "pays": "algeria",
-        "ville": "ville 04",
-        "adresse": "addr 04",
-        "numeroTelephone": "0403030303",
-        "province": "province 04",
-        "codePostal": "03334",
-        "urlPhotoProfile": "img/04.jpg",
-        "etat": "ACTIVE",
-        "admin": {
-            "admin_id": 1
-        }
+        "email": "test01@mail.com",
+        "motDePasse": "1111",
+        "prenom": "prenom 01",
+        "nom": "nom 01",
+        "pays": "Canada",
+        "ville": "ville 01",
+        "adresse": "addr 01",
+        "numeroTelephone": "010101010",
+        "province": "province 01",
+        "codePostal": "01111",
+        "urlPhotoProfile": "",
+        "etat": "ACTIVE"
     })
 
 
 
-    const handleClick = ()=>{
-        // 
-        fetch(`/membre/add`,{
+    const handleSubmit = (event)=>{
+        event.preventDefault()
+        if(retypePasswordRef.current.value!==form.motDePasse){
+            alert("two passwords are not the same!")
+            return
+        }
+        console.log(form)
+        fetch(`/membre/add/1`,{
             method: 'POST',
             body: JSON.stringify(form),
             headers: { 'Content-Type': 'application/json' },
         })
-            .then((response) => response.json() )
-            .then(data => {
-                console.log(data)
+        .then(async (response) => {
+            console.log(response)
+            try {
+                let utilisateur = await response.json()
+                console.log(utilisateur)
+                if(utilisateur!=null){
+                    setSession(utilisateur)
+                    alert("signup successfully !")
+                    navigate('/')
+                }
+            } catch (error) {
+                alert(error)
+            }
             })
             .catch((err) => {
                 throw new Error("catch throw " + err);
             });
-
-            // console.log(form)
     }
 
     return (
         <div className="container text-center mt-4 mb-4" >
-            <div>
+            <form onSubmit={handleSubmit}>
                 <div className="row mt-4 mb-5">
                     <div className="col">
                         <span className="mb-0 ps-2 h4"><strong>Register now as a <span className="text-primary" >Member</span></strong></span>
@@ -57,13 +71,13 @@ export const RegisterMemberForm = () => {
                 <div className="row mt-2">
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control form-control-sm" id="input-firstname" placeholder="first name" />
+                            <input type="text"  value={form.nom} onChange={(e)=> setForm({...form, nom: e.target.value})} className="form-control form-control-sm" id="input-firstname" placeholder="first name" />
                             <label htmlFor="input-firstname">first name</label>
                         </div>
                     </div>
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control" id="input-lastname" placeholder="last name" />
+                            <input type="text" value={form.prenom} onChange={(e)=> setForm({...form, prenom: e.target.value})} className="form-control" id="input-lastname" placeholder="last name" />
                             <label htmlFor="input-lastname">last name</label>
                         </div>
                     </div>
@@ -71,7 +85,7 @@ export const RegisterMemberForm = () => {
                 <div className="row mt-2">
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="email" className="form-control" id="input-email" placeholder="email" />
+                            <input type="email" value={form.email} onChange={(e)=> setForm({...form, email: e.target.value})} className="form-control" id="input-email" placeholder="email" />
                             <label htmlFor="input-email">email</label>
                         </div>
                     </div>
@@ -79,13 +93,13 @@ export const RegisterMemberForm = () => {
                         <div className="row mt-2">
                             <div className="d-grid gap-2 col-6 mx-auto">
                                 <div className="form-floating mb-3">
-                                    <input type="password" className="form-control" id="input-password" placeholder="password" />
+                                    <input type="password" value={form.motDePasse} onChange={(e)=> setForm({...form, motDePasse: e.target.value})} className="form-control" id="input-password" placeholder="password" />
                                     <label htmlFor="input-password">password</label>
                                 </div>
                             </div>
                             <div className="d-grid gap-2 col-6 mx-auto">
                                 <div className="form-floating mb-3">
-                                    <input type="password" className="form-control" id="input-password-confirm" placeholder="confirm password" />
+                                    <input type="password" ref={retypePasswordRef} className="form-control" id="input-password-confirm" placeholder="confirm password" />
                                     <label htmlFor="input-password-confirm">confirm password</label>
                                 </div>
                             </div>
@@ -98,13 +112,13 @@ export const RegisterMemberForm = () => {
                 <div className="row mt-2">
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control form-control-sm" id="input-address" placeholder="Address" />
+                            <input type="text" value={form.adresse} onChange={(e)=> setForm({...form, adresse: e.target.value})} className="form-control form-control-sm" id="input-address" placeholder="Address" />
                             <label htmlFor="input-address">Address</label>
                         </div>
                     </div>
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control" id="input-city" placeholder="City" />
+                            <input type="text" value={form.ville} onChange={(e)=> setForm({...form, ville: e.target.value})} className="form-control" id="input-city" placeholder="City" />
                             <label htmlFor="input-city">City</label>
                         </div>
                     </div>
@@ -113,13 +127,13 @@ export const RegisterMemberForm = () => {
                 <div className="row mt-2">
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control form-control-sm" id="input-province" placeholder="Province" />
+                            <input type="text" value={form.province} onChange={(e)=> setForm({...form, province: e.target.value})} className="form-control form-control-sm" id="input-province" placeholder="Province" />
                             <label htmlFor="input-province">Province</label>
                         </div>
                     </div>
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control form-control-sm" id="input-zipcode" placeholder="zip code" />
+                            <input type="text" value={form.codePostal} onChange={(e)=> setForm({...form, codePostal: e.target.value})} className="form-control form-control-sm" id="input-zipcode" placeholder="zip code" />
                             <label htmlFor="input-zipcode">zip code</label>
                         </div>
                     </div>
@@ -128,13 +142,13 @@ export const RegisterMemberForm = () => {
                 <div className="row mt-2">
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control form-control-sm" id="input-country" placeholder="Country" />
+                            <input type="text" value={form.pays} onChange={(e)=> setForm({...form, pays: e.target.value})} className="form-control form-control-sm" id="input-country" placeholder="Country" />
                             <label htmlFor="input-country">Country</label>
                         </div>
                     </div>
                     <div className="d-grid gap-2 col-6 mx-auto">
                         <div className="form-floating mb-3">
-                            <input type="text" className="form-control form-control-sm" id="input-phone-number" placeholder="Phone Number" />
+                            <input type="text" value={form.numeroTelephone} onChange={(e)=> setForm({...form, numeroTelephone: e.target.value})} className="form-control form-control-sm" id="input-phone-number" placeholder="Phone Number" />
                             <label htmlFor="input-phone-number">Phone Number</label>
                         </div>
                     </div>
@@ -143,12 +157,12 @@ export const RegisterMemberForm = () => {
                 <div className="row mt-2">
                     <div className="input-group mb-3">
                         <label className="input-group-text" htmlFor="input-image" ><ImUpload3 /> Upload image</label>
-                        <input type="file" className="form-control" id="input-image" placeholder="Upload image" />
+                        <input type="file" value={form.urlPhotoProfile} onChange={(e)=> setForm({...form, urlPhotoProfile: e.target.value})} className="form-control" id="input-image" placeholder="Upload image" />
                     </div>
                 </div>
                 <div className="row mt-4">
                     <div className="d-grid gap-2 col-12 mx-auto">
-                        <button className="btn btn-primary" onClick={handleClick} >Register now</button>
+                        <input type="submit" className="btn btn-primary" value="Register now" />
                     </div>
                 </div>
                 <div className="row mt-4">
@@ -159,7 +173,7 @@ export const RegisterMemberForm = () => {
                         </Link>
                     </p>
                 </div>
-            </div>
+            </form>
         </div>
     )
 }
