@@ -11,5 +11,26 @@ export const helper = {
                 reject(error)
             }
         })
+    },
+
+    urlToFile : (url, filename)=> {
+        return new Promise(async(resolve, reject)=>{
+            try {
+                const response = await fetch(url);
+                const blob = await response.blob();
+                const file = new File([blob], filename, {type: blob.type});
+                resolve(file);
+            } catch (error) {
+                reject(null)
+            }
+        })
+    },
+
+    groupBy: (list, key) => {
+        return list.reduce((a, e) => {
+            let estKey = (e[key].id); 
+            (a[estKey] ? a[estKey] : (a[estKey] = null || [])).push(e);
+            return a;
+            }, {});
     }
 }

@@ -5,8 +5,7 @@ import { FixedHeader } from '../components/header/FixedHeader';
 import { FixedFooter } from '../components/footer/FixedFooter';
 import { Body } from '../components/body/Body';
 import { CategoryForm } from '../components/category/CategoryForm';
-import { ListeVendeur } from '../components/vendeur/ListeVendeur';
-import { ListeMessages } from '../components/message/ListeMessages';
+import { ListeMessages } from '../components/message/ExpiditeuresMessages';
 import { CategoryList } from '../components/category/CategoryList';
 import { Reports } from '../components/report/Reports';
 
