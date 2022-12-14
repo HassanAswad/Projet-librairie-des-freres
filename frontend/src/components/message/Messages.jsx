@@ -1,36 +1,56 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { api } from '../../services/api';
+import './message.css'
 
 
+export const Messages = ({expediteur, receveur, lastMessage}) => {
 
-import { AiOutlineMail } from "@react-icons/all-files/ai/AiOutlineMail";
-import { AiOutlineContacts } from "@react-icons/all-files/ai/AiOutlineContacts";
+    const [formMessage, setFormMessage] = useState({ "contenu": "", "date": new Date().toISOString().split('T')[0] })
+    const [messages, setMessages] = useState([])
 
+    const syncMessages = ()=>{
+        api.getMessages(expediteur, receveur).then(msgs=>{
+            setMessages(msgs)
+        }).catch(err=>alert(err))
+    }
+    useEffect(()=>{
+        syncMessages()
+    }, [lastMessage])
 
-export const Messages = () => {
+    const handleSendMessage = ()=>{
+        if(formMessage.contenu==="") {
+            alert("please fill the message field !")
+            return
+        }
+        api.sendMessage(expediteur, receveur, formMessage).then(msg=>{
+            setFormMessage({ "contenu": "", "date": "" })
+            syncMessages()
+        }).catch(err=>alert(err))
+    }
+
     return (
-            <div className="container messages-list mt-4 mb-4">
-                <div className="row mt-4 mb-4">
-                    <div className="col d-flex justify-content-center flex-column">
-                        <p className="mb-0 ps-2 h4"><strong><AiOutlineMail /> Message</strong></p>
-                        <div className="ms-5 me-5">
-                            <table className="table table-light mt-3 mb-5" >
-                                <tbody>
-                                    {
-                                        [...Array(8)].map((e, i) =>
-                                            <tr key={i} >
-                                                <td><AiOutlineContacts /></td>
-                                                <td>Djamil</td>
-                                                <td>2022/04/04</td>
-                                            </tr>
-                                        )
-                                    }
-                                </tbody>
-                            </table>
+        <>
+            {
+                messages.map((message, j)=>
+                    <div key={j}>
+                        <div style={{textAlign: expediteur==message.receveur.id? 'right':'left'}}>
+                            <span className='message' >
+                                {/* <b>{message.expediteur.nom}</b><code></code> */}
+                                <span>{message.contenu}</span>
+                            </span>
+                            <br/><small className="text-muted">{message.date}</small>
                         </div>
-
                     </div>
-
-                </div>
+                )
+            }
+            <div className="mt-5 mb-3">
+                <label htmlFor="input-message" className="form-label d-flex justify-content-start">Message</label>
+                <textarea className="form-control" value={formMessage.contenu} onChange={e=>setFormMessage({contenu: e.target.value, date: new Date().toISOString().split('T')[0]})} rows="3"></textarea>
             </div>
+            <div className="d-grid gap-2 col-12 mx-auto">
+                <button className="btn btn-primary" type="button" onClick={handleSendMessage}>Send Message</button>
+            </div>
+        </>
+
     )
 }
