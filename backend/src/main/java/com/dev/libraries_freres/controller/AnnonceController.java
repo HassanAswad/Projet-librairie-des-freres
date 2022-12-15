@@ -1,6 +1,5 @@
 package com.dev.libraries_freres.controller;
 
-import com.dev.libraries_freres.model.Admin;
 import com.dev.libraries_freres.model.Annonce;
 import com.dev.libraries_freres.model.CategorieAnnonce;
 import com.dev.libraries_freres.model.Etat;
@@ -25,11 +24,10 @@ public class AnnonceController {
     @Autowired
     private AnnonceService service;
 
-    @PostMapping("/add/{categorie}/{membre}/{admin}")
-    public Annonce addAnnonce(@RequestBody Annonce annonce, @PathVariable CategorieAnnonce categorie, @PathVariable Membre membre, @PathVariable Admin admin) {
+    @PostMapping("/add/{categorie}/{membre}")
+    public Annonce addAnnonce(@RequestBody Annonce annonce, @PathVariable CategorieAnnonce categorie, @PathVariable Membre membre) {
         annonce.setCategorie(categorie);
         annonce.setMembre(membre);
-        annonce.setAdmin(admin);
         return service.saveAnnonce(annonce);
     }
 
@@ -65,8 +63,9 @@ public class AnnonceController {
         return service.findById(id);
     }
 
-    @PutMapping("/update")
-    public Annonce updateAnnonce(@PathVariable int id, @RequestBody Annonce annonce) {
+    @PutMapping("/update/{categorie}/{id}")
+    public Annonce updateAnnonce(@PathVariable int id, @RequestBody Annonce annonce, @PathVariable CategorieAnnonce categorie) {
+        annonce.setCategorie(categorie);
         return service.updateAnnonce(id, annonce);
     }
 

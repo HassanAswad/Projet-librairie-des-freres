@@ -36,9 +36,14 @@ public class MembreController {
         return service.getMembreById(id);
     }
 
-    @PutMapping("/update")
-    public Membre updateMembre(@PathVariable int id, @RequestBody Membre membre) {
-        return service.updateMembre(id, membre);
+    @PutMapping("/activate/{membre}")
+    public Membre activateMembre(@PathVariable Membre membre) {
+        return service.activateMembre(membre.getId());
+    }
+
+    @PutMapping("/desactivate/{membre}")
+    public Membre desactivateMembre(@PathVariable Membre membre) {
+        return service.desactivateMembre(membre.getId());
     }
 
     @DeleteMapping("/delete/{id}")

@@ -22,7 +22,7 @@ public class AnnonceService {
 
     public List<Annonce> findByEtat(Etat etat) {
         return repository.findAll().stream()
-                        .filter(annonce -> annonce.getEtat().equals(Etat.ACTIVE) && annonce.getEtat().equals(etat))
+                        .filter(annonce -> annonce.getEtat().equals(etat) && annonce.getMembre().getEtat().equals(etat))
                         .collect(Collectors.toList());
     }
 
@@ -62,8 +62,19 @@ public class AnnonceService {
     }
 
     public Annonce updateAnnonce(int id, Annonce annonce) {
-        Annonce existingAnnonce = repository.findById(id).orElse(null);
-        // existingAnnonce.set(membre.);
+        Annonce existingAnnonce = repository.findById(id).get();
+        existingAnnonce.setTitre(annonce.getTitre());
+        existingAnnonce.setAuteur(annonce.getAuteur());
+        existingAnnonce.setPrix(annonce.getPrix());
+        existingAnnonce.setDescriptionAnnonce(annonce.getDescriptionAnnonce());
+        existingAnnonce.setConditionAnnonce(annonce.getConditionAnnonce());
+        existingAnnonce.setDate(annonce.getDate());
+        existingAnnonce.setUrlPhotoLivre(annonce.getUrlPhotoLivre());
+        existingAnnonce.setEtat(annonce.getEtat());
+        existingAnnonce.setAjouterFavorie(annonce.getAjouterFavorie());
+        existingAnnonce.setCategorie(annonce.getCategorie());
+        // existingAnnonce.setMembre(annonce.getMembre());
+        // existingAnnonce.setAdmin(annonce.getAdmin());
         return repository.save(existingAnnonce);
     }
 

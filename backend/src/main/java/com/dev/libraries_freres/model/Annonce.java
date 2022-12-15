@@ -1,6 +1,7 @@
 package com.dev.libraries_freres.model;
 
 import java.time.LocalDate;
+import java.util.List;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -15,6 +16,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -58,7 +60,12 @@ public class Annonce {
     private Membre membre;
 
     @JsonIgnore
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name="admin_id")
-    private Admin admin;
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="favorisation_id")
+    private List<Favorisation> favorisation;
+
+    @JsonIgnore
+    @OneToMany(fetch = FetchType.LAZY)
+    @JoinColumn(name="evaluationAnnonces_id")
+    private List<EvaluationAnnonce> evaluationAnnonces;
 }

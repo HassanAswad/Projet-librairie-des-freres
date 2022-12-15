@@ -1,5 +1,6 @@
 package com.dev.libraries_freres.service;
 
+import com.dev.libraries_freres.model.Etat;
 import com.dev.libraries_freres.model.Membre;
 import com.dev.libraries_freres.repository.MembreRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,9 +42,15 @@ public class MembreService {
         return "Membre ["+id+"] supprimer !!";
     }
 
-    public Membre updateMembre(int id, Membre membre) {
+    public Membre activateMembre(int id) {
         Membre existingMembre = repository.findById(id).orElse(null);
-        // existingMembre.set(membre.);
+        existingMembre.setEtat(Etat.ACTIVE);
+        return repository.save(existingMembre);
+    }
+
+    public Membre desactivateMembre(int id) {
+        Membre existingMembre = repository.findById(id).orElse(null);
+        existingMembre.setEtat(Etat.DISACTIVE);
         return repository.save(existingMembre);
     }
 
