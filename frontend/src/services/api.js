@@ -153,4 +153,169 @@ export const api = {
             });
         })
     },
+
+    evaluateAnnonce: (membre, annonce, formEvaluation)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/evaluation/add/${membre}/${annonce}`,{
+                method: 'POST',
+                body: JSON.stringify(formEvaluation),
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let evaluation = await response.json()
+                    resolve(evaluation)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+
+    findEvaluation: (membre, annonce)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/evaluation/find/${membre}/${annonce}`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let evaluation = await response.json()
+                    resolve(evaluation)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+
+    reportAnnonce: (membre, annonce, formEvaluation)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/signalisation/add/${membre}/${annonce}`,{
+                method: 'POST',
+                body: JSON.stringify(formEvaluation),
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let evaluation = await response.json()
+                    resolve(evaluation)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+
+    findSignalisation: (membre, annonce)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/signalisation/find/${membre}/${annonce}`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let signalisation = await response.json()
+                    resolve(signalisation)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+
+    getSignalisations: (admin)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/signalisation/find/${admin}`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let signalisations = await response.json()
+                    resolve(signalisations)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+    
+
+    addWishList: (membre, annonce, formFavorisation)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/favorisation/add/${membre}/${annonce}`,{
+                method: 'POST',
+                body: JSON.stringify(formFavorisation),
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let favorisation = await response.json()
+                    resolve(favorisation)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+
+    getFavorisation: (membre, annonce)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/favorisation/find/${membre}/${annonce}`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let favorisation = await response.json()
+                    resolve(favorisation)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+
+    getFavorisations: (membre)=>{
+        return new Promise((resolve, reject)=>{
+            fetch(`/favorisation/find/${membre}`,{
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+            })
+            .then(async (response) => {
+                try {
+                    let favorisation = await response.json()
+                    resolve(favorisation)
+                } catch (error) {
+                    reject(error)
+                }
+            })
+            .catch((err) => {
+                reject(err)
+            });
+        })
+    },
+    
 }

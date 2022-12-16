@@ -9,6 +9,7 @@ import PageInscription from './pages/PageInscription';
 import PageVendeur from './pages/PageVendeur';
 import PageAdmin from './pages/PageAdmin';
 import PageMessages from './pages/PageMessages';
+import PageFavorisation from './pages/PageFavorisation';
 
 // _______________________________  components   _______________________________
 
@@ -23,6 +24,7 @@ const App = () => {
           <Route path="vendeur" element={<PageVendeur />} />
           <Route path="admin" element={<PageAdmin />} />
           <Route path="messages" element={<PageMessages />} />
+          <Route path="favorisation" element={<PageFavorisation />} />
         </Routes>
       </BrowserRouter>
     </>

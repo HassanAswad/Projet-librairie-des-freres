@@ -7,7 +7,8 @@ import { Body } from '../components/body/Body';
 import { CategoryForm } from '../components/category/CategoryForm';
 import { ListeMessages } from '../components/message/ExpiditeuresMessages';
 import { CategoryList } from '../components/category/CategoryList';
-import { Reports } from '../components/report/Reports';
+import { Reports } from '../components/signalisation/Reports';
+import { useLocalStorage } from '../hooks/useLocalStorage';
 
 
 
@@ -15,6 +16,7 @@ import { Reports } from '../components/report/Reports';
 
 const PageAdmin = () => {
 
+    const [session, setSession] = useLocalStorage("session", null);
     const [categoryList, setCategoryList] = useState([]);
 
     const fetchCategoryList = ()=>{
@@ -24,10 +26,10 @@ const PageAdmin = () => {
             headers: { 'Content-Type': 'application/json' },
         })
         .then(async (response) => {
-            console.log(response)
+            // console.log(response)
             try {
                 let data = await response.json()
-                console.log(data)
+                // console.log(data)
                 if(data!=null){
                     setCategoryList(data)
                 }
@@ -50,7 +52,7 @@ const PageAdmin = () => {
             <FixedHeader />
             <Body content={
                 <>
-                <div className="row">
+                <div className="row mt-5">
                     <ul className="nav nav-pills mb-3 d-flex justify-content-center" id="pills-tab" role="tablist">
                         <li className="nav-item" role="presentation">
                             <button className="nav-link active" id="pills-category-tab" data-bs-toggle="pill" data-bs-target="#pills-category" type="button" role="tab" aria-controls="pills-category" aria-selected="true">Category</button>
@@ -61,11 +63,11 @@ const PageAdmin = () => {
                     </ul>
                     <div className="tab-content" id="pills-tabContent">
                         <div className="tab-pane fade show active" id="pills-category" role="tabpanel" aria-labelledby="pills-category-tab">
-                            <CategoryForm categoryList={categoryList} fetchCategoryList={fetchCategoryList} />
+                            <CategoryForm session={session} categoryList={categoryList} fetchCategoryList={fetchCategoryList} />
                             <CategoryList categoryList={categoryList} />
                         </div>
                         <div className="tab-pane fade" id="pills-report" role="tabpanel" aria-labelledby="pills-report-tab">
-                            <Reports />
+                            <Reports session={session} />
                         </div>
                     </div>
                 </div>                    
