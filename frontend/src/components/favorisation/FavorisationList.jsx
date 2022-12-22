@@ -1,33 +1,22 @@
 import React, { useEffect, useState } from 'react'
 import { AiFillHeart } from "@react-icons/all-files/ai/AiFillHeart"
-import { api } from '../../services/api';
+import { api } from '../../services/fetch';
 
 export const FavorisationList = ({session}) => {
 
     const [favorisationsList, setFavorisationsList] = useState([]);
     
     const fetchFavorisationsList = ()=>{
-        api.getFavorisations(session.id).then(favorisations=>{
-            if(favorisations!=null){
-                setFavorisationsList(favorisations)
-            }
+        session && !session?.idAdmin && api.getFavorisations(session.id).then(favorisations=>{
+            favorisations!=null && setFavorisationsList(favorisations)
         }).catch(err=> alert(err))
     }
 
     const handleRemove = (favorisation)=>{
-        console.log(favorisation)
-        fetch(`/favorisation/delete/${favorisation.id}`,{
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            try {
-                let favorisation = await response.json()
-                favorisation?.id && fetchFavorisationsList()
-                alert("annonce removed from whishlist successfully!")
-            } catch (error) {}
-        })
-        .catch((err) => {});
+        api.deleteFavorisation(favorisation.id).then(res=>{
+            res?.id && fetchFavorisationsList()
+            alert("annonce removed from whishlist successfully!")
+        }).catch(err=> console.log(err))
     }
 
     useEffect(()=>{

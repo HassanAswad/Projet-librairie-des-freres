@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
-import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { api } from '../../services/fetch'
 
-export const LoginForm = () => {
+
+export const LoginForm = ({session, setSession}) => {
 
     const [form, setForm] = useState({"email": "admin@mail.com", "motDePasse": "admin"}) 
 
-    const [session, setSession] = useLocalStorage("session", null);
 
     const navigate = useNavigate()
 
@@ -16,34 +16,15 @@ export const LoginForm = () => {
     },[])
 
     const handleSubmit = (event)=>{
-        
         event.preventDefault()
-        
-        fetch(`/utilisateur/login`,{
-            method: 'POST',
-            body: JSON.stringify(form),
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            // console.log(response)
-            if(!response.ok){
-                alert("username or password incorrect !")
-                return
+
+        api.login(form.email, form.motDePasse).then(utilisateur=>{
+            if(utilisateur!=null){
+                setSession(utilisateur)
+                utilisateur?.idAdmin? navigate('/admin') : navigate('/vendeur')
             }
-            try {
-                let utilisateur = await response.json()
-                // console.log(utilisateur)
-                if(utilisateur!=null){
-                    setSession(utilisateur)
-                    utilisateur?.idAdmin? navigate('/admin') : navigate('/vendeur')
-                }
-            } catch (error) {
-                alert("username or password incorrect !")
-            }
-        })
-        .catch((err) => {
-            // throw new Error("catch throw " + err);
-            console.log(err)
+        }).catch((err) => {
+            alert("username or password incorrect !")
         });
     }
 

@@ -1,25 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import BookImage from'../../assets/images/bookimage.png'
 import { AiOutlineMail } from "@react-icons/all-files/ai/AiOutlineMail";
 import { AiOutlineContacts } from "@react-icons/all-files/ai/AiOutlineContacts";
-import { useEffect } from 'react';
-import { helper } from '../../helpers';
-import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { api } from '../../services/api';
+import { api } from '../../services/fetch';
 import { Messages } from './Messages';
 
-export const ExpiditeuresMessages = () => {
+export const ExpiditeuresMessages = ({session}) => {
     
-    const [session, setSession] = useLocalStorage("session", null);
     const [expediteursList, setExpediteursList] = useState([])
     const [syncMessages, setSyncMessages] = useState(0)
     const [lastMessage, setLastMessage] = useState(0)
 
 
     useEffect(()=>{
-        api.getExpiditeurs(session.id).then(expediteurs=>{
+        session && !session?.idAdmin && api.getExpiditeurs(session.id).then(expediteurs=>{
             setExpediteursList(expediteurs)
-        }).catch(err=>alert(err))
+        }).catch(err=>console.log(err))
     }, [lastMessage])
 
 
@@ -30,7 +26,6 @@ export const ExpiditeuresMessages = () => {
             api.syncMessages(session.id).then(length=>{
                 length > lastMessage && setLastMessage(length)
                 setSyncMessages(syncMessages+1)
-                // console.log(length)
             }).catch(err=>{})
         },4000);
         

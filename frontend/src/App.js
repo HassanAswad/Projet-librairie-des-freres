@@ -18,13 +18,13 @@ const App = () => {
     <>
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<PagePrincipale />} />
-          <Route path="login" element={<PageLogin />} />
-          <Route path="register" element={<PageInscription />} />
-          <Route path="vendeur" element={<PageVendeur />} />
-          <Route path="admin" element={<PageAdmin />} />
-          <Route path="messages" element={<PageMessages />} />
-          <Route path="favorisation" element={<PageFavorisation />} />
+          <Route path="/" element={<PagePrincipale route="/" />} />
+          <Route path="login" element={<PageLogin route="/login" />} />
+          <Route path="register" element={<PageInscription route="/register" />} />
+          <Route path="vendeur" element={<PageVendeur route="/vendeur" />} />
+          <Route path="admin" element={<PageAdmin route="/admin" />} />
+          <Route path="messages" element={<PageMessages route="/messages" />} />
+          <Route path="favorisation" element={<PageFavorisation route="/favorisation" />} />
         </Routes>
       </BrowserRouter>
     </>

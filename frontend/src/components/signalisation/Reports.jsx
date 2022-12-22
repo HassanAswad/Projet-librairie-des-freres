@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { api } from '../../services/api';
+import { api } from '../../services/fetch';
 
 
 export const Reports = ({session}) => {
@@ -9,45 +9,71 @@ export const Reports = ({session}) => {
     
     const fetchSignalisationsList = ()=>{
         api.getSignalisations(session.id).then(signalisations=>{
-            if(signalisations!=null){
-                console.log(signalisations)
-                setSignalisationsList(signalisations)
-            }
+            signalisations!=null && setSignalisationsList(signalisations)
         })
     }
 
-
-    const activatePublisher = (membre)=>{
-        // console.log(membre)
-        fetch(`/membre/activate/${membre.id}`,{
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            try {
-                let m = await response.json()
-                m?.id && fetchSignalisationsList()
-                alert("publisher reactivated successfully!")
-            } catch (error) {}
-        })
-        .catch((err) => {});
+    const handleKeep = (signalisation)=>{
+        if (window.confirm("Are you sure you want to reactivate?")) {
+            const annonce = signalisation.annonce
+            const membre = signalisation.membre
+            deleteSignalisation(signalisation.id)
+            activatePublisher(annonce.membre.id)
+            activateAnnonce(annonce.id)
+            setShowDetails(false)
+            fetchSignalisationsList()
+            alert("reactivated successfully!")
+        }
     }
 
-    const disactivatePublisher = (membre)=>{
-        // console.log(membre)
-        fetch(`/membre/desactivate/${membre.id}`,{
-            method: 'PUT',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            try {
-                let m = await response.json()
+
+    const handleDesactivatePublisher = (id)=>{
+        if (window.confirm("Are you sure you want to disactivate?")) {
+            api.desactivatePublisher(id).then(m=>{
                 m?.id && fetchSignalisationsList()
                 alert("publisher disactivated successfully!")
-            } catch (error) {}
-        })
-        .catch((err) => {});
+                // setShowDetails(false)
+            }).catch((err) => console.log(err)); 
+        }
     }
+
+    const handleDesactivateAnnonce = (id) => {
+        if (window.confirm("Are you sure you want to disactivate?")) {
+            api.desactivateAnnonce(id).then((res)=>{
+                fetchSignalisationsList()
+                alert("annonce disactivated successfully!")
+                // setShowDetails(false)
+            }).catch(err=> console.log(err))
+        }
+    }
+
+
+    const deleteSignalisation = (id)=>{
+        api.deleteSignalisation(id).then(m=>{
+            // m?.id && fetchSignalisationsList()
+            // alert("Signalisation deleted successfully!")
+        }).catch((err) => console.log(err)); 
+    }
+
+
+    const activatePublisher = (id)=>{
+        // if (window.confirm("Are you sure you want to reactivate?")) {
+            api.activatePublisher(id).then(m=>{
+                // m?.id && fetchSignalisationsList()
+                // alert("publisher reactivated successfully!")
+            }).catch((err) => console.log(err)); 
+        // }
+    }
+    
+    const activateAnnonce = (id) => {
+        // if (window.confirm("Are you sure you want to reactivate?")) {
+            api.activateAnnonce(id).then((res)=>{
+                // fetchSignalisationsList()
+                // alert("annonce reactivated successfully!")
+            }).catch(err=> console.log(err))
+        // }
+    }
+
 
     useEffect(()=>{
         fetchSignalisationsList()
@@ -97,9 +123,9 @@ export const Reports = ({session}) => {
                                                 <button className="btn btn-warning m-1" onClick={(e)=>setShowDetails(true) } >view details</button>
                                             ):(
                                                 <div className='row' >
-                                                    <button className="btn btn-success m-1" onClick={(e)=>{setShowDetails(false); activatePublisher(annonce.membre)} } >Keep</button>
-                                                    <button className="btn btn-danger m-1" onClick={(e)=>{}} >Disactivate ad</button>
-                                                    <button className="btn btn-danger m-1" onClick={(e)=>disactivatePublisher(annonce.membre)} >Disactivate publisher</button>
+                                                    <button className="btn btn-success m-1" onClick={(e)=>handleKeep(signalisation) } >Keep</button>
+                                                    <button className="btn btn-danger m-1" onClick={(e)=>handleDesactivateAnnonce(annonce.id)} >Disactivate ad</button>
+                                                    <button className="btn btn-danger m-1" onClick={(e)=>handleDesactivatePublisher(annonce.membre.id)} >Disactivate publisher</button>
                                                 </div>
                                             )
                                         }

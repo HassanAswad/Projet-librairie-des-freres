@@ -1,14 +1,12 @@
 import React from 'react'
 import { ImUpload3 } from "@react-icons/all-files/im/ImUpload3";
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
-import { useLocalStorage } from '../../hooks/useLocalStorage'
+import { useState, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { useRef } from 'react';
+import { api } from '../../services/fetch';
 
-export const RegisterMemberForm = () => {
+export const RegisterMemberForm = ({session, setSession}) => {
 
-    const [session, setSession] = useLocalStorage("session", null);
     const retypePasswordRef = useRef();
     const navigate = useNavigate()
 
@@ -35,29 +33,14 @@ export const RegisterMemberForm = () => {
             alert("two passwords are not the same!")
             return
         }
-        console.log(form)
-        fetch(`/membre/add/1`,{
-            method: 'POST',
-            body: JSON.stringify(form),
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            console.log(response)
-            try {
-                let utilisateur = await response.json()
-                console.log(utilisateur)
-                if(utilisateur!=null){
-                    setSession(utilisateur)
-                    alert("signup successfully !")
-                    navigate('/')
-                }
-            } catch (error) {
-                alert(error)
+
+        api.register(form).then(utilisateur=>{
+            if(utilisateur!=null){
+                setSession(utilisateur)
+                alert("signup successfully !")
+                navigate('/')
             }
-            })
-            .catch((err) => {
-                throw new Error("catch throw " + err);
-            });
+        }).catch(err=>console.log(err))
     }
 
     return (

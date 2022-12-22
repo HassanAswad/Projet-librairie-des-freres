@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import { Outlet, Link } from "react-router-dom";
+import React, { forwardRef, useImperativeHandle, useState } from 'react'
+import { Outlet, Link, useNavigate } from "react-router-dom";
 import './FixedHeader.css';
 
 
@@ -10,27 +10,18 @@ import { FaUserAlt } from "@react-icons/all-files/fa/FaUserAlt";
 import { IoMdMail } from "@react-icons/all-files/io/IoMdMail";
 import { GiHamburgerMenu } from "@react-icons/all-files/gi/GiHamburgerMenu";
 
-import { useLocalStorage } from '../../hooks/useLocalStorage'
-import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'
-import { api } from '../../services/api'
 
-export const FixedHeader = () => {
+export const FixedHeader = ({session}) => {
 
-    const [session, setSession] = useLocalStorage("session", null);
+    const navigate = useNavigate()
 
     const [word, setWord] = useState("")
-    const handleSearch = (event)=> {
-        event?.preventDefault()
-        
-        if(event?.which == 13 || event?.keyCode == 13){
-            console.log(word)
-            api.fetchAnnonces(`/findByTitre/${word}`).then(data=>{
-                if(data!=null){
-                    // setCategoryList(data)
-                }
-            }).catch(err=> alert(err))
 
+    const handleSearch = (event)=> {
+        // console.log(event)
+        event?.preventDefault()
+        if(event?.which == 13 || event?.keyCode == 13 || event.type==="click"){
+            navigate("/", { state: { word: word }, replace: false });
         }
     }
 
@@ -68,7 +59,7 @@ export const FixedHeader = () => {
 
                     <ul className="navbar-nav me-auto mb-2 mb-lg-0 w-100 d-flex justify-content-end">
                         <li className="nav-item">
-                            <Link className="nav-link active" to="/">
+                            <Link className="nav-link active" to="/favorisation">
                                 <button type="button" className="btn btn-light"><AiFillHeart /> WishList</button>
                             </Link>
                         </li>

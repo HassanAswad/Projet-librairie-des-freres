@@ -5,15 +5,12 @@ import { BsFillExclamationCircleFill } from "@react-icons/all-files/bs/BsFillExc
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { api } from '../../services/api';
-
+import { api } from '../../services/fetch';
 import Modal from 'react-bootstrap/Modal';
 
 
 
-export const Signalisation = ({annonce, setOpenedModels}) => {
-
-    const [session, setSession] = useLocalStorage("session", null);
+export const Signalisation = ({session, annonce, setOpenedModels}) => {
 
     const [formSignalisation, setFormSignalisation] = useState({
         "dateSignaler": new Date().toISOString().split('T')[0],
@@ -21,13 +18,13 @@ export const Signalisation = ({annonce, setOpenedModels}) => {
     })
 
     useEffect(()=>{
-        api.findSignalisation(session.id, annonce.id).then(Signalisation=>{
-            console.log(Signalisation)
-            Signalisation?.commentaire && setFormSignalisation({
+        api.findSignalisation(session.id, annonce.id).then(signalisation=>{
+            signalisation?.commentaire && 
+            setFormSignalisation({
                 ...formSignalisation,
-                commentaire: Signalisation.commentaire
+                commentaire: signalisation.commentaire
             })
-        }).catch(err=>{})
+        }).catch(err=> {})
     }, [])
 
     const handleSignale = ()=>{
@@ -35,8 +32,8 @@ export const Signalisation = ({annonce, setOpenedModels}) => {
             alert("please fill the message field !")
             return
         }
-        api.reportAnnonce(session.id, annonce.id, formSignalisation).then(Signalisation=>{
-            console.log(Signalisation)
+        api.reportAnnonce(session.id, annonce.id, formSignalisation).then(signalisation=>{
+            // console.log(signalisation)
             setFormSignalisation({ ...formSignalisation, "commentaire": "" })
             handleClose()
             alert("Signalisation was sent successfully !")
@@ -44,7 +41,7 @@ export const Signalisation = ({annonce, setOpenedModels}) => {
     }
 
     const handleClose = ()=>{
-        setOpenedModels({detail: false, Signalisation: false, report: false})
+        setOpenedModels({detail: false, signalisation: false, report: false})
     }
 
 
