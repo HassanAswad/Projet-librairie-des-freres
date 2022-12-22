@@ -4,51 +4,52 @@ import React, { useEffect, useState } from 'react'
 import { FixedHeader } from '../components/header/FixedHeader';
 import { FixedFooter } from '../components/footer/FixedFooter';
 import { Body } from '../components/body/Body';
-import { AjouterLivreForm } from '../components/livre/AjouterLivreForm';
-import { VosLivres } from '../components/livre/VosLivres';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { api } from '../services/api'
-import { EditLivreForm } from '../components/livre/EditLivreForm';
+import { AjouterAnnonceForm } from '../components/annonce/AjouterAnnonceForm';
+import { VosAnnonces } from '../components/annonce/VosAnnonces';
+import { EditAnnonceForm } from '../components/annonce/EditAnnonceForm';
+import { useSession } from '../hooks/useSession';
+import { helper } from '../helpers'
+import {api} from '../services/fetch';
 
 // _______________________________  components   _______________________________
 
-const PageVendeur = () => {
+const PageVendeur = ({route}) => {
 
-    const [session, setSession] = useLocalStorage("session", null);
+    const [session, setSession] = useSession({connected: {admin: "/", membre: route}, disconnected: '/'})
+
 
     const [isAnnonceEdit, setIsCAnnonceEdit] = useState(false);
     const [annonceEdit, setCAnnonceEdit] = useState({});
 
     const [annoncesList, setCAnnoncesList] = useState([]);
     const fetchAnnoncesList = ()=>{
-        api.fetchAnnonces(`/findByMembre/${session.id}`).then(data=>{
-            if(data!=null){
-                setCAnnoncesList(data)
-            }
+        api.findAnnoncesByMembre(session.id).then(data=>{
+            data!=null && setCAnnoncesList(data)
         }).catch(err=> alert(err))
     }
 
     useEffect(()=>{
-        fetchAnnoncesList()
+        session && !session?.idAdmin && fetchAnnoncesList()
     }, [])
 
     const handleEdit = (annonce)=>{
+        if(!helper.isAllowed(session, "prompt")) return
         setCAnnonceEdit(annonce)
         setIsCAnnonceEdit(true)
     }
 
     return(
         <>
-            <FixedHeader />
+            <FixedHeader session={session} />
             <Body content={
                 <>
                     {
                         isAnnonceEdit? (
-                            <EditLivreForm fetchAnnoncesList={fetchAnnoncesList} setIsCAnnonceEdit={setIsCAnnonceEdit} annonce={annonceEdit} />
+                            <EditAnnonceForm fetchAnnoncesList={fetchAnnoncesList} setIsCAnnonceEdit={setIsCAnnonceEdit} annonce={annonceEdit} />
                         ):(
                             <>
-                                <AjouterLivreForm fetchAnnoncesList={fetchAnnoncesList} setCAnnonceEdit={setCAnnonceEdit} />
-                                <VosLivres annoncesList={annoncesList} fetchAnnoncesList={fetchAnnoncesList} handleEdit={handleEdit} />
+                                <AjouterAnnonceForm fetchAnnoncesList={fetchAnnoncesList} session={session} />
+                                <VosAnnonces session={session} annoncesList={annoncesList} fetchAnnoncesList={fetchAnnoncesList} handleEdit={handleEdit} />
                             </>
                         )
                     }

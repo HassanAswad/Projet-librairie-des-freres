@@ -9,38 +9,23 @@ import { ListeMessages } from '../components/message/ExpiditeuresMessages';
 import { CategoryList } from '../components/category/CategoryList';
 import { Reports } from '../components/signalisation/Reports';
 import { useLocalStorage } from '../hooks/useLocalStorage';
+import { useSession } from '../hooks/useSession';
 
-
+import {api} from '../services/fetch';
 
 // _______________________________  components   _______________________________
 
-const PageAdmin = () => {
+const PageAdmin = ({route}) => {
 
-    const [session, setSession] = useLocalStorage("session", null);
+    const [session, setSession] = useSession({connected: {admin: route, membre: '/'}, disconnected: '/'})
+    
+
     const [categoryList, setCategoryList] = useState([]);
 
     const fetchCategoryList = ()=>{
-        
-        fetch(`/categorieAnnonce/all`,{
-            method: 'GET',
-            headers: { 'Content-Type': 'application/json' },
+        api.fetchCategories().then(categories=>{
+            categories!=null && setCategoryList(categories)
         })
-        .then(async (response) => {
-            // console.log(response)
-            try {
-                let data = await response.json()
-                // console.log(data)
-                if(data!=null){
-                    setCategoryList(data)
-                }
-            } catch (error) {
-                alert(error)
-            }
-        })
-        .catch((err) => {
-            // throw new Error("catch throw " + err);
-            console.log(err)
-        });
     }
 
     useEffect(()=>{
@@ -49,7 +34,7 @@ const PageAdmin = () => {
 
     return(
         <>
-            <FixedHeader />
+            <FixedHeader session={session} />
             <Body content={
                 <>
                 <div className="row mt-5">

@@ -1,0 +1,7 @@
+.actions .text-center{
+    cursor: pointer;
+}
+.actions .text-center svg {
+    width: 35px;
+    height: 35px;
+}

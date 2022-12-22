@@ -1,3 +1,5 @@
+import { constants } from "../constants";
+
 export const helper = {
     fileToBase64: (file)=>{
         return new Promise((resolve, reject)=>{
@@ -32,5 +34,12 @@ export const helper = {
             (a[estKey] ? a[estKey] : (a[estKey] = null || [])).push(e);
             return a;
             }, {});
+    },
+
+    isAllowed : (session, prompt)=>{
+        if(!session?.id) { prompt && alert("please login first !"); return false;}
+        if(session?.idAdmin) { prompt && alert("only members have permition, action not allowed for admin !"); return false;}
+        if(session?.etat===constants.etat[1]) { prompt && alert("only activated members have permission, please contact the admin to reactivate your account !"); return false;}
+        return true
     }
 }

@@ -5,15 +5,20 @@ import { FixedHeader } from '../components/header/FixedHeader';
 import { FixedFooter } from '../components/footer/FixedFooter';
 import { Body } from '../components/body/Body';
 import { RegisterMemberForm } from '../components/register/RegisterMemberForm';
+import { useSession } from '../hooks/useSession';
 
 // _______________________________  components   _______________________________
 
-const PageInscription = () => {
+const PageInscription = ({route}) => {
+
+    const [session, setSession] = useSession({connected: {admin: '/', membre: route}, disconnected: route})
+    
+
     return(
         <>
-            <FixedHeader />
+            <FixedHeader session={session} />
             <Body content={
-                <RegisterMemberForm />
+                <RegisterMemberForm session={session} setSession={setSession} />
             }/>
             <FixedFooter />
         </>

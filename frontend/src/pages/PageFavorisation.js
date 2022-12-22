@@ -1,25 +1,22 @@
 
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { FixedHeader } from '../components/header/FixedHeader';
 import { FixedFooter } from '../components/footer/FixedFooter';
 import { Body } from '../components/body/Body';
-import { AjouterLivreForm } from '../components/livre/AjouterLivreForm';
-import { VosLivres } from '../components/livre/VosLivres';
-import { useLocalStorage } from '../hooks/useLocalStorage';
-import { api } from '../services/api'
-import { EditLivreForm } from '../components/livre/EditLivreForm';
 import { FavorisationList } from '../components/favorisation/FavorisationList';
+import { useSession } from '../hooks/useSession';
 
 // _______________________________  components   _______________________________
 
-const PageVendeur = () => {
+const PageVendeur = ({route}) => {
 
-    const [session, setSession] = useLocalStorage("session", null);
+    const [session, setSession] = useSession({connected: {admin: '/', membre: route}, disconnected: '/'})
+    
 
     return(
         <>
-            <FixedHeader />
+            <FixedHeader session={session} />
             <Body content={
                 <FavorisationList session={session} />
             } />

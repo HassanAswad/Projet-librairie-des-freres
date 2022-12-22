@@ -2,97 +2,47 @@ import React from 'react'
 import './CategoryForm.css'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 import { useEffect } from 'react';
-import { useNavigate } from 'react-router-dom'
 import { useState } from 'react';
+import { api } from '../../services/fetch';
 
-export const CategoryForm = ({categoryList, fetchCategoryList}) => {
-
-    const [session, setSession] = useLocalStorage("session", null);
-    const navigate = useNavigate()
-
-    useEffect(()=>{
-        session==null && navigate("/")
-        if(! session?.idAdmin) navigate('/vendeur')
-    },[])
+export const CategoryForm = ({session, categoryList, fetchCategoryList}) => {
 
 
     const [addForm, setAddForm] = useState({"libelle": ""});
     const handleSubmitAdd = (event)=>{
-        
         event.preventDefault()
-        
-        fetch(`/categorieAnnonce/add`,{
-            method: 'POST',
-            body: JSON.stringify(addForm),
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            console.log(response)
-            try {
-                let data = await response.json()
-                console.log(data)
-                setAddForm({libelle: ""})
-                fetchCategoryList()
-                alert("category added successfully !")
-            } catch (error) {
-                alert(error)
-            }
-        })
-        .catch((err) => {
-            // throw new Error("catch throw " + err);
-            console.log(err)
-        });
+        api.addCategorie(addForm).then(res=>{
+            setAddForm({libelle: ""})
+            fetchCategoryList()
+            alert("category added successfully !")
+        }).catch(err=> console.log(err))
     }
 
 
     const [updateForm, setUpdateForm] = useState({"id": categoryList?.length>0? categoryList[0].id: -1, "libelle": ""});
     const handleSubmitUpdate = (event)=>{
         event.preventDefault()
-        fetch(`/categorieAnnonce/update/${updateForm.id}`,{
-            method: 'PUT',
-            body: JSON.stringify(updateForm),
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            console.log(response)
-            try {
-                let data = await response.json()
-                console.log(data)
-                setUpdateForm({...updateForm, "libelle": ""})
-                fetchCategoryList()
-                alert("category updated successfully !")
-            } catch (error) {
-                alert(error)
-            }
-        })
-        .catch((err) => {
-            console.log(err)
-        });
+        api.editCategorie(updateForm).then(res=>{
+            setUpdateForm({...updateForm, "libelle": ""})
+            fetchCategoryList()
+            alert("category updated successfully !")
+        }).catch(err=>console.log(err))
     }
 
 
     const [deleteForm, setDeleteForm] = useState({"id": categoryList?.length>0? categoryList[0].id: -1});
     const handleSubmitDelete = (event)=>{
         event.preventDefault()
-        fetch(`/categorieAnnonce/delete/${deleteForm.id}`,{
-            method: 'DELETE',
-            headers: { 'Content-Type': 'application/json' },
-        })
-        .then(async (response) => {
-            console.log(response)
-            try {
-                let data = await response.json()
-                console.log(data)
-                fetchCategoryList()
-                alert("category deleted successfully !")
-            } catch (error) {
-                alert(error)
-            }
-        })
-        .catch((err) => {
-            console.log(err)
-        });
+        api.deleteCategorie(deleteForm).then(res=>{
+            fetchCategoryList()
+            alert("category deleted successfully !")
+        }).catch(err=> console.log(err))
     }
+
+    useEffect(()=>{
+        setUpdateForm({...updateForm, id: categoryList?.length>0? categoryList[0].id: -1})
+        setDeleteForm({...deleteForm, id: categoryList?.length>0? categoryList[0].id: -1})
+    }, [categoryList])
 
     return (
         <div className="container category-form mt-4 mb-4 pb-4" style={{background: '#fff'}} >

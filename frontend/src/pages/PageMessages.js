@@ -5,14 +5,19 @@ import { FixedHeader } from '../components/header/FixedHeader';
 import { FixedFooter } from '../components/footer/FixedFooter';
 import { Body } from '../components/body/Body';
 import { ExpiditeuresMessages } from '../components/message/ExpiditeuresMessages';
+import { useSession } from '../hooks/useSession';
 
 // _______________________________  components   _______________________________
 
-const PageMessages = () => {
+const PageMessages = ({route}) => {
+
+    const [session, setSession] = useSession({connected: {admin: '/', membre: route}, disconnected: '/'})
+    
+
     return(
         <>
-            <FixedHeader />
-            <Body content={ <ExpiditeuresMessages /> } />
+            <FixedHeader session={session} />
+            <Body content={ <ExpiditeuresMessages session={session} /> } />
             <FixedFooter />
         </>
     )

@@ -5,14 +5,19 @@ import { FixedHeader } from '../components/header/FixedHeader';
 import { FixedFooter } from '../components/footer/FixedFooter';
 import { Body } from '../components/body/Body';
 import { LoginForm } from '../components/login/LoginForm';
+import { useSession } from '../hooks/useSession';
 
 // _______________________________  components   _______________________________
 
-const PageLogin = () => {
+const PageLogin = ({route}) => {
+
+    const [session, setSession] = useSession({connected: {admin: route, membre: route}, disconnected: route})
+    
+
     return(
         <>
-            <FixedHeader />
-            <Body content={ <LoginForm /> } />
+            <FixedHeader session={session} />
+            <Body content={ <LoginForm session={session} setSession={setSession} /> } />
             <FixedFooter />
         </>
     )

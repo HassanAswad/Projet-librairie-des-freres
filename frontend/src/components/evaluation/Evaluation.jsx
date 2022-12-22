@@ -7,23 +7,20 @@ import BookImage from'../../assets/images/bookimage.png'
 import { useEffect } from 'react';
 import { useState } from 'react';
 import { useLocalStorage } from '../../hooks/useLocalStorage';
-import { api } from '../../services/api';
-
-import Button from 'react-bootstrap/Button';
+import { api } from '../../services/fetch';
 import Modal from 'react-bootstrap/Modal';
-
 import './evaluation.css'
+import { constants } from '../../constants';
 
-const notes = {/*"ZERO":0,*/ "ONE":1, "TWO":2, "THREE":3, "FOUR":4, "FIVE":5};
+
 const notesParse = ()=>{
     let keys = [], values = []
-    for(var k in notes) { keys.push(k); values.push(notes[k]); }
+    for(var k in constants.notes) { keys.push(k); values.push(constants.notes[k]); }
     return {keys, values}
 } 
 
-export const Evaluation = ({annonce, setOpenedModels}) => {
-
-    const [session, setSession] = useLocalStorage("session", null);
+export const Evaluation = ({session, annonce, setOpenedModels}) => {
+    
 
     const [formEvaluation, setFormEvaluation] = useState({
         "dateEvaluation": new Date().toISOString().split('T')[0],
@@ -33,12 +30,11 @@ export const Evaluation = ({annonce, setOpenedModels}) => {
 
     useEffect(()=>{
         api.findEvaluation(session.id, annonce.id).then(evaluation=>{
-            console.log(evaluation)
             evaluation?.note && setFormEvaluation({
                 ...formEvaluation,
                 // dateEvaluation: evaluation.dateEvaluation,
                 commentaire: evaluation.commentaire,
-                note: notes[evaluation.note]-1,
+                note: constants.notes[evaluation.note],
             })
         }).catch(err=>{})
     }, [])
@@ -49,7 +45,6 @@ export const Evaluation = ({annonce, setOpenedModels}) => {
             return
         }
         api.evaluateAnnonce(session.id, annonce.id, formEvaluation).then(evaluation=>{
-            console.log(evaluation)
             setFormEvaluation({ ...formEvaluation, "commentaire": "", "note": -1 })
             handleClose()
             alert("Eavaluation was sent successfully !")
@@ -61,8 +56,6 @@ export const Evaluation = ({annonce, setOpenedModels}) => {
     }
 
     const triggerChange = (star)=>{
-        // let newNote = ""
-        // for(var k in notes) if(notes[k]==star) {newNote = k; break}
         setFormEvaluation({...formEvaluation, note: star })
     }
 
@@ -86,9 +79,13 @@ export const Evaluation = ({annonce, setOpenedModels}) => {
                         <div className='starts' >
                             {
                                 notesParse().values.map((star,i)=>
-                                    <div key={i} className={i<=formEvaluation.note? "star selected":"star"} onClick={(e)=> triggerChange(i)}>
-                                        <MdStars />
-                                    </div>
+                                    i==0?(
+                                        <div key={i}></div>
+                                    ):(
+                                        <div key={i} className={star<=formEvaluation.note? "star selected":"star"} onClick={(e)=> triggerChange(star)}>
+                                            <MdStars />
+                                        </div>
+                                    )
                                 )
                             }
                         </div>
