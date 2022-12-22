@@ -60,12 +60,17 @@ public class Annonce {
     private Membre membre;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="favorisation_id")
-    private List<Favorisation> favorisation;
+    @OneToMany(mappedBy = "annonce", fetch = FetchType.LAZY, orphanRemoval = true)
+    // @JoinColumn(name="favorisation_id")
+    private List<Favorisation> favorisations;
 
     @JsonIgnore
-    @OneToMany(fetch = FetchType.LAZY)
-    @JoinColumn(name="evaluationAnnonces_id")
+    @OneToMany(mappedBy = "annonce", fetch = FetchType.LAZY, orphanRemoval = true)
+    // @JoinColumn(name="evaluationAnnonces_id")
     private List<EvaluationAnnonce> evaluationAnnonces;
+
+    @JsonIgnore
+    @OneToMany(mappedBy = "annonce", fetch = FetchType.LAZY, orphanRemoval = true)
+    // @JoinColumn(name="signalisation_id")
+    private List<Signalisation> signalisations;
 }

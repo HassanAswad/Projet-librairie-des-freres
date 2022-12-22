@@ -41,9 +41,6 @@ public class EvaluationAnnonce {
     @Enumerated(EnumType.ORDINAL)
     @Column(name="note")
     private Note note;
-    // @Basic
-    // @Transient
-    // private Note note;
 
     // constructor, setter, getter
 }

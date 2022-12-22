@@ -53,9 +53,9 @@ public class AnnonceController {
         return service.findByMembre(membre);
     }
 
-    @GetMapping("/findByTitre/{titre}")
-    public List<Annonce> findByTitre(@PathVariable String titre) {
-        return service.findByTitre(titre);
+    @GetMapping("/findByTitreOrPrix/{word}")
+    public List<Annonce> findByTitreOrPrix(@PathVariable String word) {
+        return service.findByTitreOrPrix(word);
     }
 
     @GetMapping("/findById/{id}")
@@ -69,9 +69,14 @@ public class AnnonceController {
         return service.updateAnnonce(id, annonce);
     }
 
-    @DeleteMapping("/delete/{id}")
-    public Annonce deleteAnnonce(@PathVariable int id) {
+    @PutMapping("/desactivate/{id}")
+    public Annonce desactivateAnnonce(@PathVariable int id) {
         return service.deactivateAnnonce(id);
+    }
+
+    @PutMapping("/activate/{id}")
+    public Annonce activateAnnonce(@PathVariable int id) {
+        return service.activateAnnonce(id);
     }
 
     // @RequestMapping(value = "/upload", method = RequestMethod.POST, consumes = MediaType.MULTIPART_FORM_DATA_VALUE)

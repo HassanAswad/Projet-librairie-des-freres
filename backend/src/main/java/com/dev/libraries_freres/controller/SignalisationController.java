@@ -29,10 +29,10 @@ public class SignalisationController {
     //     return service.findById(id);
     // }
 
-    // @GetMapping("/find/{membre}/{annonce}")
-    // public Signalisation find(@PathVariable Membre membre, @PathVariable Annonce annonce) {
-    //     return service.find(membre, annonce);
-    // }
+    @GetMapping("/find/{membre}/{annonce}")
+    public Signalisation find(@PathVariable Membre membre, @PathVariable Annonce annonce) {
+        return service.find(membre, annonce);
+    }
 
     // @GetMapping("/find/{membre}")
     // public List<Signalisation> find(@PathVariable Membre membre) {

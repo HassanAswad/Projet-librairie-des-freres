@@ -35,4 +35,16 @@ public class UtilisateurController {
         return null;
     }
 
+    @GetMapping("/find/{utilisateur}")
+    public Utilisateur findUtilisateurType(@PathVariable Utilisateur utilisateur) {
+        Utilisateur existUtilisateur = service.findUtilisateur(utilisateur);
+        if(existUtilisateur!=null){
+            Utilisateur membre = membreService.findMembreByIdUtilisateur(existUtilisateur.getId());
+            if(membre!=null) return membre;
+            Utilisateur admin = adminService.findAdminByIdUtilisateur(existUtilisateur.getId());
+            if(admin!=null) return admin;
+        }
+        return null;
+    }
+
 }

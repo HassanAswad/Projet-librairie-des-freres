@@ -38,9 +38,16 @@ public class AnnonceService {
                         .collect(Collectors.toList());
     }
 
-    public List<Annonce> findByTitre(String titre) {
+    public List<Annonce> findByTitreOrPrix(String word) {
         return repository.findAll().stream()
-                        .filter(annonce -> annonce.getEtat().equals(Etat.ACTIVE) && annonce.getTitre().contains(titre))
+                        .filter(annonce -> {
+                            double prix = 0;
+                            try {
+                                prix = Double.parseDouble(word);
+                            } catch (Exception e) {}
+                            return annonce.getEtat().equals(Etat.ACTIVE) && 
+                            ( annonce.getTitre().toLowerCase().contains(word.toLowerCase()) || annonce.getPrix() <= prix );
+                        } )
                         .collect(Collectors.toList());
     }
 
@@ -59,6 +66,12 @@ public class AnnonceService {
         // } catch (Exception e) {
         //     return "{ \"id\": "+e.getMessage()+"}";
         // }
+    }
+
+    public Annonce activateAnnonce(int id) {
+        Annonce existingAnnonce = repository.findById(id).get();
+        existingAnnonce.setEtat(Etat.ACTIVE);
+        return repository.save(existingAnnonce);
     }
 
     public Annonce updateAnnonce(int id, Annonce annonce) {
